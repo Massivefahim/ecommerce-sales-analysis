@@ -1,34 +1,35 @@
-﻿# E-Commerce Sales & Profit Performance Analysis Dashboard
+﻿# India E-Commerce Sales & Profit Performance Analysis Dashboard
 
 [![Python](https://img.shields.io/badge/Python-3.13-blue.svg)](https://www.python.org/)
 [![Pandas](https://img.shields.io/badge/Pandas-Data%20Analysis-150458.svg)](https://pandas.pydata.org/)
 [![Matplotlib](https://img.shields.io/badge/Matplotlib-Visualization-11557c.svg)](https://matplotlib.org/)
 [![SQL](https://img.shields.io/badge/SQL-Analytics%20Queries-orange.svg)](https://en.wikipedia.org/wiki/SQL)
 [![Power BI](https://img.shields.io/badge/Power%20BI-Executive%20Dashboard-F2C811.svg)](https://powerbi.microsoft.com/)
+[![Currency](https://img.shields.io/badge/Currency-INR%20(%E2%82%B9)-green.svg)](https://en.wikipedia.org/wiki/Indian_rupee)
 
 ---
 
 ## 📌 Project Overview
-An end-to-end data analytics project designed to evaluate sales revenue, profit margins, product category dynamics, regional performance, and customer purchasing patterns for a multi-category e-commerce business.
+An end-to-end data analytics project focused on the **Indian e-commerce retail market**, analyzing **850+ transactional orders** across Tier-1 and Tier-2 Indian cities (Mumbai, Delhi, Bengaluru, Hyderabad, Kolkata, Pune, Ahmedabad, Lucknow, Patna, Jaipur, etc.).
 
-This project simulates a complete real-world business intelligence workflow:
-1. **Excel:** Data profiling, quality assurance, duplicate handling, and initial pivot summaries.
-2. **SQL:** Structured queries aggregating revenue, profit, average order value (AOV), and customer segmentation.
-3. **Python (Pandas & Matplotlib):** Automated data validation, statistical distribution, and visual trend discovery.
-4. **Power BI:** Interactive executive dashboard with dynamic slicers and DAX KPIs for business decision-makers.
+The project simulates a complete business intelligence lifecycle:
+1. **Excel:** Data cleaning, duplicate removal, format standardization, and pivot validation.
+2. **SQL:** 13 structured queries evaluating revenue in Indian Rupees (₹), profit margins, regional penetration, payment method adoption (UPI, COD, Cards), and order fulfillment.
+3. **Python (Pandas & Matplotlib):** Automated ETL, exploratory data analysis, and publication-ready charts exported in INR denominations.
+4. **Power BI:** Interactive executive dashboard with dynamic slicers (Date, State, Region, Category, Payment Method) and custom DAX measures.
 
 ---
 
 ## 📊 Executive Summary & Key Performance Indicators (KPIs)
 
-| Metric | Value | Business Interpretation |
+| Metric | Value (INR) | Business Interpretation |
 | :--- | :--- | :--- |
-| **Total Revenue** | **$748,700.68** | Total gross merchandise sales generated in 2023 |
-| **Total Net Profit** | **$29,373.48** | Overall business profit after discounts and product costs |
-| **Overall Profit Margin** | **3.92%** | Slim operational margin driven down by furniture losses |
-| **Total Orders** | **750** | Unique sales orders processed |
-| **Total Items Sold** | **2,666** | Units moved across all categories |
-| **Average Order Value (AOV)** | **$998.27** | Average revenue generated per customer transaction |
+| **Total Revenue** | **₹2,08,50,066.35** (~₹2.09 Crore) | Gross merchandise value generated across all product lines in 2023 |
+| **Total Net Profit** | **₹6,75,411.54** (~₹6.75 Lakh) | Overall business net earnings after discounts, refunds, and logistics |
+| **Overall Profit Margin** | **3.24%** | Net profit margin impacted by heavy logistics costs and clearance discounts |
+| **Total Orders** | **850** | Valid commercial transactions processed |
+| **Total Customers** | **25** | High-frequency retail & corporate buyer accounts |
+| **Average Order Value (AOV)** | **₹24,529.49** | Average ticket size driven by high-value smartphone & laptop orders |
 
 ---
 
@@ -38,60 +39,65 @@ This project simulates a complete real-world business intelligence workflow:
 ecommerce-sales-analysis/
 │
 ├── data/
-│   ├── ecommerce_sales_raw.csv         # Raw transactional dataset with real-world flaws
-│   └── ecommerce_sales_cleaned.csv     # Cleaned, standardized, analysis-ready dataset
+│   ├── ecommerce_sales_raw.csv         # Raw Indian dataset with duplicate & blank rows for cleaning
+│   └── ecommerce_sales_cleaned.csv     # Cleaned, analysis-ready dataset (850 records, 14 columns)
 │
 ├── sql/
-│   └── ecommerce_sales_analysis.sql    # 11 commented SQL queries (Aggregations, GROUP BY, CASE WHEN)
+│   └── ecommerce_sales_analysis.sql    # 13 commented SQL queries (Aggregations, HAVING, CASE WHEN)
 │
 ├── python/
-│   └── ecommerce_sales_analysis.py     # Python script for ETL, metrics calculation, and charts
+│   └── ecommerce_sales_analysis.py     # Python script for ETL, metrics calculation, and chart exports
 │
 ├── powerbi/
-│   └── powerbi_dashboard_guide.md      # Visual layouts, field mappings, and DAX measures
+│   └── powerbi_dashboard_guide.md      # Field mapping, visual specs, and DAX measures
 │
 ├── images/
-│   ├── monthly_sales_trend.png         # Monthly revenue progression chart
-│   ├── sales_by_category.png          # Category sales comparison
-│   ├── profit_by_category.png         # Category profit margin comparison
-│   ├── top_10_products.png            # High revenue product rankings
-│   └── sales_by_region.png            # Geographic revenue distribution
+│   ├── monthly_sales_trend.png         # Monthly revenue progression chart (Lakhs INR)
+│   ├── sales_by_category.png          # Category revenue distribution
+│   ├── sales_by_state.png             # Top Indian states by revenue
+│   ├── profit_by_region.png           # Regional net profit comparison (North, South, East, West)
+│   ├── top_5_products.png             # Top revenue drivers (Samsung S23, OnePlus 11R, HP Laptop)
+│   └── order_status_distribution.png  # Fulfillment pie chart (Delivered, Returned, Cancelled)
 │
-└── README.md                           # Project documentation and business insights
+└── README.md                           # Comprehensive documentation & business recommendations
 ```
 
 ---
 
-## 🔍 Key Business Findings
+## 🔍 Key Business Findings (Calculated Directly from Dataset)
 
-### 1. Technology is the Primary Growth Engine
-* **Finding:** Technology generated **$430,320.28 (57.5% of total sales)** and delivered **$46,560.23 in profit** with an average profit margin of **10.82%**.
-* **Impact:** High consumer demand for items such as the *Dell XPS 15 Laptop ($144,353.70)* and *Apple iPhone 14 ($65,199.00)* creates healthy cash flow and strong margins.
+### 1. Mobiles & Electronics Dominate Top-Line Revenue (86.3%)
+* **Finding:** **Mobiles & Accessories (₹95,06,179.75)** and **Electronics (₹84,83,634.10)** together accounted for **₹1.80 Crore (86.3% of total revenue)**.
+* **Impact:** High ticket items (Samsung Galaxy S23 5G at ₹47.6L and OnePlus 11R at ₹31.1L) generate healthy cash flow and the bulk of net profit (₹3.72L and ₹2.41L).
 
-### 2. Furniture Category Is Incurring Severe Losses
-* **Finding:** While Furniture generated substantial sales (**$301,419.50, 40.3% of total**), it produced a net **loss of -$20,994.20** (-6.97% margin).
-* **Impact:** Bulky items (such as the *Modern Leather Recliner* and *Executive Wooden Desk*) suffered from aggressive promotional discounts (up to 30%) combined with high fulfillment costs.
+### 2. Home & Kitchen Incurs Net Losses Driven by Heavy Freight & Returns
+* **Finding:** Home & Kitchen generated **₹18,48,285.90** in sales but produced a net **loss of -₹67,894.62** (-3.67% margin).
+* **Impact:** High-weight products like the *Wakefit Orthopedic Mattress (-₹1,58,120.48 loss)* suffered from return logistics overhead and price discounts that eroded margins.
 
-### 3. Office Supplies Offers High Margins with Low Ticket Size
-* **Finding:** Office Supplies accounted for only **$16,960.90 (2.3% of sales)**, but achieved the company’s highest margin at **22.45% ($3,807.45 profit)**.
-* **Impact:** Consumable items like copy paper and gel pens have reliable repeat purchase frequency with virtually zero discount erosion.
+### 3. Beauty & Fashion Deliver the Highest Profit Margins
+* **Finding:** **Beauty & Personal Care** achieved the company’s highest margin at **23.08%** (₹49,377.76 profit on ₹2.14L sales), followed by **Fashion** at **10.14%** (₹80,897.63 profit on ₹7.98L sales).
+* **Impact:** While unit prices are lower, high gross margins make these categories ideal for cross-selling and margin expansion.
 
-### 4. Central & South Regions Lead in Revenue
-* **Finding:** Central ($239,530.16) and South ($226,217.96) together drove **62.2% of all revenue**. West region had the smallest volume ($94,207.54) but maintained the highest regional margin (**6.60%**).
-* **Impact:** Central and South volume is healthy, but discounting policies need regional alignment to match Western profitability.
+### 4. UPI is the Undisputed Payment Leader (38.5% Share)
+* **Finding:** **UPI** led all payment modes with **₹80,28,686.75 across 360 orders (38.5% of sales)**, followed by Credit Cards (₹50.5L / 24.2%) and Cash on Delivery (₹42.9L / 20.6%).
+* **Impact:** UPI provides the lowest payment gateway failure rate and eliminates COD handling friction.
 
-### 5. High-Value Customer Concentration
-* **Finding:** The top 5 customers accounted for over **$223,898 (29.9% of company revenue)**, led by *Christopher Young ($50,164.97)* and *Andrew Scott ($50,108.64)*.
-* **Impact:** The business benefits from strong B2B/bulk buyers; retaining these key accounts is critical to overall sales stability.
+### 5. Maharashtra and West Region Lead Sales & Profitability
+* **Finding:** **Maharashtra** was the #1 state with **₹42,18,818.90 across 114 orders**, followed by Delhi (₹25.1L), Bihar (₹22.8L), and West Bengal (₹21.5L). The **West Region** delivered the highest regional profit of **₹3,20,958.13 (4.60% margin)**.
+* **Impact:** Western tier-1 hubs (Mumbai, Pune, Ahmedabad) show the highest purchasing power and repeat order frequency.
+
+### 6. Healthy Order Fulfillment with Manageable Return Rates
+* **Finding:** **72.9% of orders (620 orders)** were successfully **Delivered**, 9.4% Shipped, and 7.1% Processing. Returns stood at **6.8% (58 orders)** and cancellations at **3.8% (32 orders)**.
+* **Impact:** Return rates are aligned with Indian e-commerce benchmarks, though returns in bulky home goods need tighter pre-dispatch checks.
 
 ---
 
 ## 💡 Strategic Business Recommendations
 
-1. **Cap Furniture Discounts:** Eliminate discounts exceeding 10% on bulky furniture and institute a freight shipping surcharge on items exceeding 50 lbs.
-2. **Bundle Office Supplies with Technology:** Leverage high-volume tech purchases to cross-sell high-margin office supplies (e.g., bundle laptops with desk organizers and laptop stands).
-3. **VIP Loyalty Program for Top 20% Accounts:** Introduce dedicated account managers and volume rebate tiers for corporate buyers spending over $25,000 annually.
-4. **Expand West Region Marketing:** Allocate 15% more digital ad spend to the West region, which yields the best return per dollar sold (6.60% net margin).
+1. **Implement Reverse Logistics Surcharge on Bulky Home Goods:** For heavy items like mattresses and furniture, require an upfront non-refundable freight deposit of ₹500–₹1,000 on COD orders to curb frivolous returns.
+2. **Promote UPI Adoption with 2% Instant Cashback:** Convert remaining Cash on Delivery orders (20.6% share) to UPI at checkout to reduce RTO (Return to Origin) risks and courier cash-handling fees.
+3. **Bundle High-Margin Beauty & Fashion with Tech Purchases:** Create automated "Add to Cart" recommendations offering skin care or casual apparel at special combo pricing during electronics checkouts.
+4. **Target Tier-2 Hubs in West & Central Regions:** Scale regional inventory nodes in Pune, Ahmedabad, and Indore to reduce transit times and shipping overhead.
 
 ---
 
@@ -99,22 +105,21 @@ ecommerce-sales-analysis/
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/your-username/ecommerce-sales-analysis.git
+git clone https://github.com/Massivefahim/ecommerce-sales-analysis.git
 cd ecommerce-sales-analysis
 ```
 
-### 2. Run Python Analysis & Visualizations
-Make sure Python 3.9+ is installed, then run:
+### 2. Run Python Script (Generates All Visualizations)
 ```bash
 pip install pandas matplotlib
 python python/ecommerce_sales_analysis.py
 ```
 
 ### 3. Run SQL Queries
-Open your preferred SQL client (MySQL Workbench, DBeaver, pgAdmin, or SQLite Studio), import `data/ecommerce_sales_cleaned.csv`, and execute `sql/ecommerce_sales_analysis.sql`.
+Load `data/ecommerce_sales_cleaned.csv` into MySQL, PostgreSQL, SQLite, or DBeaver and run `sql/ecommerce_sales_analysis.sql`.
 
-### 4. Build the Power BI Dashboard
-Follow the exact visual layout and DAX formulas outlined in [`powerbi/powerbi_dashboard_guide.md`](powerbi/powerbi_dashboard_guide.md).
+### 4. Build Power BI Dashboard
+Open Power BI Desktop, import `data/ecommerce_sales_cleaned.csv`, and follow the field mapping and DAX measures outlined in [`powerbi/powerbi_dashboard_guide.md`](powerbi/powerbi_dashboard_guide.md).
 
 ---
 
@@ -122,4 +127,4 @@ Follow the exact visual layout and DAX formulas outlined in [`powerbi/powerbi_da
 - **Analyst:** [Your Name]
 - **Role:** Aspiring Data Analyst
 - **LinkedIn:** [Your LinkedIn Profile URL]
-- **Portfolio:** [Your GitHub Profile URL]
+- **GitHub:** [https://github.com/Massivefahim](https://github.com/Massivefahim)

@@ -1,199 +1,184 @@
 ﻿# ===============================================================
-# Project: E-Commerce Sales Analysis
+# Project: India E-Commerce Sales Analysis
 # Tools: Python (Pandas, Matplotlib)
-# Description: Beginner-friendly data analytics workflow to clean,
-#              explore, aggregate, and visualize e-commerce sales.
+# Currency: Indian Rupees (INR / ₹)
+# Description: Beginner-friendly data analytics script to inspect,
+#              clean, aggregate, and visualize Indian e-commerce sales.
 # ===============================================================
 
+import os
+import sys
 import pandas as pd
 import matplotlib.pyplot as plt
-import os
+
+# Ensure UTF-8 support for console output in Windows
+if sys.platform == 'win32':
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
 
 def main():
     # -----------------------------------------------------------
-    # Step 1: Set File Paths & Load Dataset
+    # Step 1: Set Paths & Load Dataset
     # -----------------------------------------------------------
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     data_path = os.path.join(base_dir, 'data', 'ecommerce_sales_cleaned.csv')
     images_dir = os.path.join(base_dir, 'images')
     os.makedirs(images_dir, exist_ok=True)
 
-    print('=' * 60)
-    print('1. LOADING DATASET')
-    print('=' * 60)
+    print('=' * 65)
+    print('1. LOADING INDIA E-COMMERCE DATASET')
+    print('=' * 65)
     df = pd.read_csv(data_path)
-    print(f'Successfully loaded dataset with {df.shape[0]} rows and {df.shape[1]} columns.\n')
+    print(f'Successfully loaded dataset: {df.shape[0]} rows, {df.shape[1]} columns.\n')
 
     # -----------------------------------------------------------
-    # Step 2: Inspecting Dataset Structure & Missing Values
+    # Step 2: Overview & Summary Info
     # -----------------------------------------------------------
-    print('=' * 60)
-    print('2. DATASET OVERVIEW & SUMMARY INFO')
-    print('=' * 60)
-    print('First 5 rows:')
-    print(df.head(), '\n')
-    
-    print('Data Types and Non-Null Counts:')
-    print(df.info(), '\n')
-    
-    print('Missing values per column:')
+    print('=' * 65)
+    print('2. DATASET OVERVIEW & STRUCTURE')
+    print('=' * 65)
+    print('First 5 records:')
+    print(df[['Order ID', 'Customer Name', 'City', 'State', 'Category', 'Sales', 'Profit', 'Payment Method', 'Order Status']].head(), '\n')
+
+    print('Missing values count per column:')
     print(df.isnull().sum(), '\n')
 
     # -----------------------------------------------------------
-    # Step 3: Data Type Conversion & Feature Engineering
+    # Step 3: Date Preprocessing
     # -----------------------------------------------------------
-    print('=' * 60)
-    print('3. DATA PREPARATION')
-    print('=' * 60)
     df['Order Date'] = pd.to_datetime(df['Order Date'])
     df['YearMonth'] = df['Order Date'].dt.to_period('M').astype(str)
-    print("Converted 'Order Date' to datetime and extracted 'YearMonth'.\n")
 
     # -----------------------------------------------------------
-    # Step 4: Core Key Performance Indicators (KPIs)
+    # Step 4: Core Business KPIs (in INR ₹)
     # -----------------------------------------------------------
     total_sales = df['Sales'].sum()
     total_profit = df['Profit'].sum()
     total_orders = df['Order ID'].nunique()
-    total_qty = df['Quantity'].sum()
+    total_customers = df['Customer ID'].nunique()
     avg_order_val = total_sales / total_orders
     profit_margin = (total_profit / total_sales) * 100
 
-    print('=' * 60)
-    print('4. OVERALL BUSINESS KPIS')
-    print('=' * 60)
-    print(f'Total Sales Revenue:     ${total_sales:,.2f}')
-    print(f'Total Net Profit:        ${total_profit:,.2f}')
+    print('=' * 65)
+    print('3. EXECUTIVE BUSINESS KPIS (INDIA)')
+    print('=' * 65)
+    print(f'Total Sales Revenue:     Rs. {total_sales:,.2f}')
+    print(f'Total Net Profit:        Rs. {total_profit:,.2f}')
     print(f'Overall Profit Margin:   {profit_margin:.2f}%')
     print(f'Total Orders Placed:     {total_orders:,}')
-    print(f'Total Items Sold:        {total_qty:,}')
-    print(f'Average Order Value:     ${avg_order_val:,.2f}\n')
+    print(f'Total Unique Customers:  {total_customers:,}')
+    print(f'Average Order Value:     Rs. {avg_order_val:,.2f}\n')
 
     # -----------------------------------------------------------
     # Step 5: Category Performance
     # -----------------------------------------------------------
-    print('=' * 60)
-    print('5. SALES & PROFIT BY CATEGORY')
-    print('=' * 60)
+    print('=' * 65)
+    print('4. SALES & PROFIT BY CATEGORY')
+    print('=' * 65)
     cat_summary = df.groupby('Category').agg(
         Total_Sales=('Sales', 'sum'),
         Total_Profit=('Profit', 'sum'),
-        Total_Quantity=('Quantity', 'sum')
+        Order_Count=('Order ID', 'count')
     ).reset_index()
     cat_summary['Profit_Margin_%'] = (cat_summary['Total_Profit'] / cat_summary['Total_Sales']) * 100
     cat_summary = cat_summary.sort_values(by='Total_Sales', ascending=False)
     print(cat_summary.to_string(index=False), '\n')
 
     # -----------------------------------------------------------
-    # Step 6: Regional Performance
+    # Step 6: Payment Method Breakdown
     # -----------------------------------------------------------
-    print('=' * 60)
-    print('6. SALES & PROFIT BY REGION')
-    print('=' * 60)
-    reg_summary = df.groupby('Region').agg(
+    print('=' * 65)
+    print('5. PAYMENT METHOD SHARE')
+    print('=' * 65)
+    pm_summary = df.groupby('Payment Method').agg(
         Total_Sales=('Sales', 'sum'),
-        Total_Profit=('Profit', 'sum'),
-        Order_Count=('Order ID', 'nunique')
+        Order_Count=('Order ID', 'count')
     ).reset_index().sort_values(by='Total_Sales', ascending=False)
-    reg_summary['Profit_Margin_%'] = (reg_summary['Total_Profit'] / reg_summary['Total_Sales']) * 100
-    print(reg_summary.to_string(index=False), '\n')
+    pm_summary['Sales_Share_%'] = (pm_summary['Total_Sales'] / total_sales) * 100
+    print(pm_summary.to_string(index=False), '\n')
 
     # -----------------------------------------------------------
-    # Step 7: Top Products
+    # Step 7: Visualizations with Matplotlib
     # -----------------------------------------------------------
-    print('=' * 60)
-    print('7. TOP 5 PRODUCTS BY SALES')
-    print('=' * 60)
-    top5_sales = df.groupby('Product Name')['Sales'].sum().reset_index().sort_values(by='Sales', ascending=False).head(5)
-    print(top5_sales.to_string(index=False), '\n')
-
-    print('TOP 5 PRODUCTS BY PROFIT:')
-    top5_profit = df.groupby('Product Name')['Profit'].sum().reset_index().sort_values(by='Profit', ascending=False).head(5)
-    print(top5_profit.to_string(index=False), '\n')
-
-    # -----------------------------------------------------------
-    # Step 8: Visualizations with Matplotlib
-    # -----------------------------------------------------------
-    print('=' * 60)
-    print('8. GENERATING CHARTS & VISUALIZATIONS')
-    print('=' * 60)
+    print('=' * 65)
+    print('6. GENERATING CHARTS (INDIA E-COMMERCE)')
+    print('=' * 65)
 
     # Chart 1: Monthly Sales Trend
     monthly = df.groupby('YearMonth')['Sales'].sum().reset_index()
     plt.figure(figsize=(10, 5))
-    plt.plot(monthly['YearMonth'], monthly['Sales'], marker='o', color='#1f77b4', linewidth=2.5, markersize=6)
+    plt.plot(monthly['YearMonth'], monthly['Sales'] / 100000, marker='o', color='#2563EB', linewidth=2.5, markersize=6)
     plt.title('Monthly Sales Trend (2023)', fontsize=14, fontweight='bold', pad=15)
     plt.xlabel('Month', fontsize=11)
-    plt.ylabel('Total Sales ($)', fontsize=11)
+    plt.ylabel('Sales (INR in Lakhs)', fontsize=11)
     plt.xticks(rotation=45)
-    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.grid(True, linestyle='--', alpha=0.5)
     plt.tight_layout()
-    chart1_path = os.path.join(images_dir, 'monthly_sales_trend.png')
-    plt.savefig(chart1_path, dpi=300)
+    plt.savefig(os.path.join(images_dir, 'monthly_sales_trend.png'), dpi=300)
     plt.close()
-    print(f'Saved: {chart1_path}')
 
     # Chart 2: Sales by Category
-    plt.figure(figsize=(8, 5))
-    bars = plt.bar(cat_summary['Category'], cat_summary['Total_Sales'], color=['#2ca02c', '#ff7f0e', '#1f77b4'], width=0.55)
-    plt.title('Total Sales by Category', fontsize=14, fontweight='bold', pad=15)
-    plt.xlabel('Category', fontsize=11)
-    plt.ylabel('Total Sales ($)', fontsize=11)
+    plt.figure(figsize=(9, 5))
+    bars = plt.bar(cat_summary['Category'], cat_summary['Total_Sales'] / 100000, color='#0D9488', width=0.55)
+    plt.title('Sales by Category', fontsize=14, fontweight='bold', pad=15)
+    plt.ylabel('Sales (INR in Lakhs)', fontsize=11)
+    plt.xticks(rotation=15)
     for bar in bars:
         yval = bar.get_height()
-        plt.text(bar.get_x() + bar.get_width()/2.0, yval + 5000, f'${yval:,.0f}', ha='center', va='bottom', fontsize=10, fontweight='bold')
+        plt.text(bar.get_x() + bar.get_width()/2.0, yval + 1.2, f'{yval:.1f}L', ha='center', va='bottom', fontsize=9, fontweight='bold')
     plt.tight_layout()
-    chart2_path = os.path.join(images_dir, 'sales_by_category.png')
-    plt.savefig(chart2_path, dpi=300)
+    plt.savefig(os.path.join(images_dir, 'sales_by_category.png'), dpi=300)
     plt.close()
-    print(f'Saved: {chart2_path}')
 
-    # Chart 3: Profit by Category
-    colors = ['#2ca02c' if x > 0 else '#d62728' for x in cat_summary['Total_Profit']]
-    plt.figure(figsize=(8, 5))
-    bars = plt.bar(cat_summary['Category'], cat_summary['Total_Profit'], color=colors, width=0.55)
-    plt.title('Total Profit by Category', fontsize=14, fontweight='bold', pad=15)
-    plt.xlabel('Category', fontsize=11)
-    plt.ylabel('Total Profit ($)', fontsize=11)
-    plt.axhline(0, color='black', linewidth=0.8, linestyle='--')
+    # Chart 3: Sales by State (Top 7)
+    top_states = df.groupby('State')['Sales'].sum().sort_values(ascending=False).head(7)
+    plt.figure(figsize=(9, 5))
+    bars = plt.bar(top_states.index, top_states.values / 100000, color='#6366F1', width=0.55)
+    plt.title('Top 7 Indian States by Sales Revenue', fontsize=14, fontweight='bold', pad=15)
+    plt.ylabel('Sales (INR in Lakhs)', fontsize=11)
+    plt.xticks(rotation=20)
     for bar in bars:
         yval = bar.get_height()
-        offset = 1200 if yval >= 0 else -3000
-        plt.text(bar.get_x() + bar.get_width()/2.0, yval + offset, f'${yval:,.0f}', ha='center', va='bottom', fontsize=10, fontweight='bold')
+        plt.text(bar.get_x() + bar.get_width()/2.0, yval + 0.6, f'{yval:.1f}L', ha='center', va='bottom', fontsize=9, fontweight='bold')
     plt.tight_layout()
-    chart3_path = os.path.join(images_dir, 'profit_by_category.png')
-    plt.savefig(chart3_path, dpi=300)
+    plt.savefig(os.path.join(images_dir, 'sales_by_state.png'), dpi=300)
     plt.close()
-    print(f'Saved: {chart3_path}')
 
-    # Chart 4: Top 10 Products
-    top10_prod = df.groupby('Product Name')['Sales'].sum().sort_values(ascending=True).tail(10)
-    plt.figure(figsize=(10, 6))
-    plt.barh(top10_prod.index, top10_prod.values, color='#4B8BBE')
-    plt.title('Top 10 Products by Sales Revenue', fontsize=14, fontweight='bold', pad=15)
-    plt.xlabel('Sales ($)', fontsize=11)
-    plt.tight_layout()
-    chart4_path = os.path.join(images_dir, 'top_10_products.png')
-    plt.savefig(chart4_path, dpi=300)
-    plt.close()
-    print(f'Saved: {chart4_path}')
-
-    # Chart 5: Sales by Region
+    # Chart 4: Profit by Region
+    reg_profit = df.groupby('Region')['Profit'].sum().sort_values(ascending=False)
     plt.figure(figsize=(8, 5))
-    bars = plt.bar(reg_summary['Region'], reg_summary['Total_Sales'], color='#9467bd', width=0.55)
-    plt.title('Total Sales by Region', fontsize=14, fontweight='bold', pad=15)
-    plt.xlabel('Region', fontsize=11)
-    plt.ylabel('Total Sales ($)', fontsize=11)
+    bars = plt.bar(reg_profit.index, reg_profit.values / 1000, color=['#10B981', '#3B82F6', '#F59E0B', '#8B5CF6'], width=0.5)
+    plt.title('Net Profit by Region', fontsize=14, fontweight='bold', pad=15)
+    plt.ylabel('Profit (INR in Thousands)', fontsize=11)
     for bar in bars:
         yval = bar.get_height()
-        plt.text(bar.get_x() + bar.get_width()/2.0, yval + 3000, f'${yval:,.0f}', ha='center', va='bottom', fontsize=10, fontweight='bold')
+        plt.text(bar.get_x() + bar.get_width()/2.0, yval + 4, f'{yval:.0f}K', ha='center', va='bottom', fontsize=9, fontweight='bold')
     plt.tight_layout()
-    chart5_path = os.path.join(images_dir, 'sales_by_region.png')
-    plt.savefig(chart5_path, dpi=300)
+    plt.savefig(os.path.join(images_dir, 'profit_by_region.png'), dpi=300)
     plt.close()
-    print(f'Saved: {chart5_path}')
 
-    print('\nAll analyses completed and visualizations exported successfully!')
+    # Chart 5: Top 5 Products by Sales
+    top5_prod = df.groupby('Product Name')['Sales'].sum().sort_values(ascending=True).tail(5)
+    plt.figure(figsize=(10, 5.5))
+    plt.barh(top5_prod.index, top5_prod.values / 100000, color='#F97316')
+    plt.title('Top 5 Products by Revenue (India)', fontsize=14, fontweight='bold', pad=15)
+    plt.xlabel('Sales (INR in Lakhs)', fontsize=11)
+    plt.tight_layout()
+    plt.savefig(os.path.join(images_dir, 'top_5_products.png'), dpi=300)
+    plt.close()
+
+    # Chart 6: Order Status Distribution
+    status_counts = df['Order Status'].value_counts()
+    plt.figure(figsize=(8, 5))
+    plt.pie(status_counts.values, labels=status_counts.index, autopct='%1.1f%%', colors=['#10B981', '#3B82F6', '#FBBF24', '#EF4444', '#6B7280'], startangle=140)
+    plt.title('Order Fulfillment Status Distribution', fontsize=14, fontweight='bold', pad=15)
+    plt.tight_layout()
+    plt.savefig(os.path.join(images_dir, 'order_status_distribution.png'), dpi=300)
+    plt.close()
+
+    print('All charts successfully updated and saved to images/!')
 
 if __name__ == '__main__':
     main()

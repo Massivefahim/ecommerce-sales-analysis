@@ -1,46 +1,54 @@
-﻿# Power BI Dashboard Implementation Guide
+﻿# Power BI Dashboard Implementation Guide: India E-Commerce Sales Analysis
 
-## Project: E-Commerce Sales Executive Performance Dashboard
+## 📌 Project Overview
+**Dashboard Title:** India E-Commerce Sales Analysis  
 **Canvas Dimensions:** Standard 16:9 (1280 x 720 px)  
-**Theme / Color Palette:**
-- Primary Navy: `#1E293B` (Headers, KPI text)
-- Accent Blue: `#2563EB` (Sales bars & line trend)
-- Positive Green: `#16A34A` (Profitable indicators)
-- Alert Red: `#DC2626` (Loss indicators)
-- Background: `#F8FAFC` (Clean light off-white)
-- Card Containers: `#FFFFFF` (White cards with subtle drop shadows)
+**Currency:** Indian Rupee (INR / ₹)  
+**Theme & Color Palette:**
+- Primary Header/Nav: `#0F172A` (Slate Navy)
+- Primary Sales Accent: `#2563EB` (Royal Blue)
+- Indian Teal Accent: `#0D9488` (Category bars)
+- Positive Profit: `#10B981` (Emerald Green)
+- Negative Alert: `#EF4444` (Loss / Returns)
+- Card Containers: `#FFFFFF` with 8px rounded corners and subtle drop shadows
 
 ---
 
 ## 1. DAX Measures (Copy & Paste Ready)
 
-Create a dedicated table named `_Measures` in Power BI (`Enter Data` -> Name it `_Measures`), then create the following measures:
+In Power BI, click **"New Measure"** on the Home tab and paste these measures:
 
-### Measure 1: Total Sales
+### Measure 1: Total Sales (₹)
 ```dax
-Total Sales = SUM(sales_orders[Sales])
+Total Sales = SUM(ecommerce_sales_cleaned[Sales])
 ```
-*Format: Currency (`$`), 2 decimal places.*
+*Format: Currency (`₹ English (India)` or custom format `₹#,##,##0.00`).*
 
-### Measure 2: Total Profit
+### Measure 2: Total Profit (₹)
 ```dax
-Total Profit = SUM(sales_orders[Profit])
+Total Profit = SUM(ecommerce_sales_cleaned[Profit])
 ```
-*Format: Currency (`$`), 2 decimal places.*
+*Format: Currency (`₹ English (India)` or custom format `₹#,##,##0.00`).*
 
 ### Measure 3: Total Orders
 ```dax
-Total Orders = DISTINCTCOUNT(sales_orders[Order ID])
+Total Orders = DISTINCTCOUNT(ecommerce_sales_cleaned[Order ID])
 ```
-*Format: Whole number with thousand separator (`#,##0`).*
+*Format: Whole number with comma separator (`#,##0`).*
 
-### Measure 4: Average Order Value (AOV)
+### Measure 4: Total Customers
+```dax
+Total Customers = DISTINCTCOUNT(ecommerce_sales_cleaned[Customer ID])
+```
+*Format: Whole number (`#,##0`).*
+
+### Measure 5: Average Order Value (AOV ₹)
 ```dax
 Average Order Value = DIVIDE([Total Sales], [Total Orders], 0)
 ```
-*Format: Currency (`$`), 2 decimal places.*
+*Format: Currency (`₹#,##,##0.00`).*
 
-### Measure 5: Profit Margin %
+### Measure 6: Profit Margin %
 ```dax
 Profit Margin % = DIVIDE([Total Profit], [Total Sales], 0)
 ```
@@ -51,72 +59,67 @@ Profit Margin % = DIVIDE([Total Profit], [Total Sales], 0)
 ## 2. Dashboard Layout Structure (One Page)
 
 ```
-+-----------------------------------------------------------------------------------------+
-| [Header] E-Commerce Sales & Profit Executive Dashboard    |  [Slicers: Date, Cat, Reg] |
-+-----------------------------------------------------------------------------------------+
-| [KPI 1: Total Sales] | [KPI 2: Total Profit] | [KPI 3: Total Orders] | [KPI 4: Avg Order]|
-|     $748,701         |       $29,373         |         750           |      $998.27     |
-+-----------------------------------------------------------------------------------------+
-|  [Monthly Sales Trend - Line Chart]           |  [Sales & Profit by Category - Bar]     |
-|  X: Month, Y: Total Sales                     |  Y: Category, X: Total Sales            |
-+-----------------------------------------------------------------------------------------+
-|  [Top 5 Products by Sales - Horizontal Bar]   |  [Sales & Profit by Region - Clustered] |
-|  Y: Product Name, X: Total Sales              |  X: Region, Y: Sales & Profit           |
-+-----------------------------------------------------------------------------------------+
++-----------------------------------------------------------------------------------------------+
+|  🇮🇳 India E-Commerce Sales Analysis          [Slicers: Date | State | Region | Cat | PayMethod] |
++-----------------------------------------------------------------------------------------------+
+| [Total Sales]    | [Total Profit]   | [Total Orders] | [Total Customers] | [Avg Order Value]  |
+|  ₹2.09 Cr        |  ₹6.75 Lakh      |   850 Orders   |   25 VIP Accounts |  ₹24,529           |
++-----------------------------------------------------------------------------------------------+
+|  [Monthly Sales Trend - Line Chart]           |  [Sales by Category - Column Chart]           |
+|  X: Month, Y: Total Sales                     |  X: Category, Y: Total Sales                  |
++-----------------------------------------------------------------------------------------------+
+|  [Sales by State - Bar Chart]                 |  [Profit by Region - Bar] | [Order Status]    |
+|  Y: State, X: Total Sales                     |  X: Region, Y: Profit     | Donut: Delivered% |
++-----------------------------------------------------------------------------------------------+
 ```
 
 ---
 
 ## 3. Visuals Configuration & Field Mappings
 
-### A. Top Slicer Bar (Top Right)
-1. **Date Slicer:**
-   - Field: `sales_orders[Order Date]`
-   - Visual Type: Slicer -> Style: `Between` (Slider)
-2. **Category Slicer:**
-   - Field: `sales_orders[Category]`
-   - Visual Type: Slicer -> Style: `Tile` or `Dropdown`
-3. **Region Slicer:**
-   - Field: `sales_orders[Region]`
-   - Visual Type: Slicer -> Style: `Dropdown`
+### A. Top Slicer Bar
+1. **Date Slicer:** Field: `Order Date` -> Style: `Between` (Slider)
+2. **State Slicer:** Field: `State` -> Style: `Dropdown`
+3. **Region Slicer:** Field: `Region` -> Style: `Dropdown`
+4. **Category Slicer:** Field: `Category` -> Style: `Dropdown` or `Tile`
+5. **Payment Method Slicer:** Field: `Payment Method` -> Style: `Dropdown` (UPI, COD, Cards)
 
-### B. KPI Cards (Row 1)
-Place 4 **Card (New)** or classic **Card** visuals side-by-side:
-- **Card 1:** Measure `[Total Sales]` | Title: "Total Revenue"
-- **Card 2:** Measure `[Total Profit]` | Title: "Net Profit" (Add conditional formatting: Green if >= 0, Red if < 0)
-- **Card 3:** Measure `[Total Orders]` | Title: "Total Orders"
-- **Card 4:** Measure `[Average Order Value]` | Title: "Avg Order Value (AOV)"
+### B. Top KPI Cards Row
+Add 5 **Card** visuals side by side:
+- **Card 1:** Field: `[Total Sales]` (Title: Total Revenue)
+- **Card 2:** Field: `[Total Profit]` (Title: Net Profit)
+- **Card 3:** Field: `[Total Orders]` (Title: Total Orders)
+- **Card 4:** Field: `[Total Customers]` (Title: Active Customers)
+- **Card 5:** Field: `[Average Order Value]` (Title: AOV)
 
 ### C. Visual 1: Monthly Sales Trend (Middle Left)
 - **Visual Type:** Line Chart
-- **X-Axis:** `sales_orders[Order Date]` (Hierarchy -> Month) or `[YearMonth]`
+- **X-Axis:** `Order Date` (Hierarchy: Month) or `YearMonth`
 - **Y-Axis:** `[Total Sales]`
-- **Tooltip:** `[Total Profit]`, `[Total Orders]`
-- **Formatting:** Turn Data Labels ON, Stroke width: 3, Data color: `#2563EB`.
+- **Tooltips:** `[Total Profit]`, `[Total Orders]`
+- **Formatting:** Turn Data Labels ON, Line color `#2563EB`.
 
 ### D. Visual 2: Sales by Category (Middle Right)
-- **Visual Type:** Clustered Column Chart (or Bar Chart)
-- **X-Axis:** `sales_orders[Category]`
+- **Visual Type:** Clustered Column Chart
+- **X-Axis:** `Category`
 - **Y-Axis:** `[Total Sales]`
 - **Tooltips:** `[Total Profit]`, `[Profit Margin %]`
-- **Formatting:** Data Labels ON, display units: Thousands (`$K`).
+- **Formatting:** Data Labels ON, display units: Lakhs / Millions.
 
-### E. Visual 3: Top 5 Products by Sales (Bottom Left)
+### E. Visual 3: Sales by State (Bottom Left)
 - **Visual Type:** Clustered Bar Chart (Horizontal)
-- **Y-Axis:** `sales_orders[Product Name]`
+- **Y-Axis:** `State`
 - **X-Axis:** `[Total Sales]`
-- **Filter (Filters Pane):** Filter on `Product Name` -> Filter Type: `Top N` -> Show top: `5` by value `[Total Sales]`.
-- **Formatting:** Data Labels ON, Data color: `#1E293B`.
+- **Formatting:** Data color `#6366F1`, Data labels ON.
 
-### F. Visual 4: Regional Performance (Bottom Right)
+### F. Visual 4: Profit by Region (Bottom Center)
 - **Visual Type:** Clustered Column Chart
-- **X-Axis:** `sales_orders[Region]`
-- **Y-Axis:** `[Total Sales]` and `[Total Profit]`
-- **Formatting:** Sales bar in Blue (`#2563EB`), Profit bar in Green (`#16A34A`).
+- **X-Axis:** `Region`
+- **Y-Axis:** `[Total Profit]`
+- **Formatting:** Data color `#10B981`.
 
----
-
-## 4. Pro Formatting Tips for Beginners
-1. **Disable Gridlines:** Turn off heavy vertical and horizontal gridlines for a clean modern SaaS look.
-2. **Standardize Font:** Use `Segoe UI` or `Segoe UI Semibold` across all labels and titles.
-3. **Card Border & Rounded Corners:** Under `Format visual` -> `General` -> `Effects` -> set Background to White and Border with 8px rounded corners.
+### G. Visual 5: Order Status (Bottom Right)
+- **Visual Type:** Donut Chart
+- **Legend:** `Order Status`
+- **Values:** `[Total Orders]`
+- **Formatting:** Legend position: Right, Detail labels: Category + Percent of total.
