@@ -124,7 +124,7 @@ Open Power BI Desktop, import `data/ecommerce_sales_cleaned.csv`, and follow the
 ---
 
 ## 👤 Author & Contact
-- **Analyst:** [Your Name]
+- **Analyst:** MOBASHSHAR FAHIM
 - **Role:** Aspiring Data Analyst
-- **LinkedIn:** [Your LinkedIn Profile URL]
+- **LinkedIn:** https://www.linkedin.com/in/mobashshar-fahim/
 - **GitHub:** [https://github.com/Massivefahim](https://github.com/Massivefahim)
